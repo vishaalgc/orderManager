@@ -1,0 +1,81 @@
+package common;
+
+import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Map;
+
+import io.vertx.core.AsyncResult;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.RoutingContext;
+
+public class Common {
+	
+	public static HttpServerResponse getHeaders(RoutingContext c) {
+		return c.response().putHeader("Content-Type", "application/json")
+				.putHeader("Access-Control-Allow-Origin", "*")
+				.putHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+				.putHeader("Access-Control-Allow-Headers", "key, Authorization, authorization");
+	}
+	
+	public static void resultManager(Map<String, Object> result,AsyncResult<Object> asyncResult,RoutingContext routingContext){
+		if (asyncResult.succeeded()) {
+			getHeaders(routingContext).setStatusCode(200).end(Json.encodePrettily(result));
+		}
+		if (asyncResult.failed() && asyncResult.cause().toString().equalsIgnoreCase("-1")) {
+			System.out.println("inside result failed, cause: " + asyncResult.cause().toString());
+			getHeaders(routingContext).setStatusCode(200).end(Json.encodePrettily("Result Failed"));
+		}
+	}
+	
+	public static Map<String, Object> outputManager(AsyncResult<Object> results) {
+		Map<String, Object> output = new HashMap<String, Object>();
+		Object result = results.result();
+		if(result == null){
+			output.put("data", null);
+			output.put("success", 0);
+		}
+		else if(result instanceof String){
+				output.put("data", result);
+				output.put("success", 1);
+		}
+		else if(result instanceof JsonObject){
+			JsonObject resultObj = (JsonObject)result;
+			if(resultObj.containsKey("Error")){
+				output.put("Message", resultObj.getString("Error"));
+				output.put("data", null);
+				output.put("success", 0);
+			}
+			else{
+				Object item = resultObj.getValue("result");
+				if(item instanceof JsonArray){
+					JsonArray tempArray = (JsonArray)item;
+					if(tempArray.contains("ALL GOOD")){
+						output.put("data", tempArray);
+						output.put("success", 1);
+					}
+					else if(tempArray.contains("Error, no record found")){
+						output.put("data", tempArray);
+						output.put("success", 0);
+					}
+					else{
+						output.put("data", item);
+						output.put("success", 1);
+					}
+				}
+				else{
+					output.put("data", resultObj.getValue("result"));
+					output.put("success", 1);
+				}
+			}
+		}
+		return output;
+	}
+	
+	
+	
+	
+}

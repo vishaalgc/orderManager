@@ -1,0 +1,87 @@
+package verticles;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import common.Common;
+import common.MicroServiceVerticle;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpServer;
+import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
+import services.RabbitMqReceive;
+import services.Services;
+
+public class RabbitMqVerticle extends MicroServiceVerticle {
+	 private int port = 8090;
+
+	    @Override
+	    public void start(Future<Void> future) throws Exception {
+	        super.start();
+
+	        Future<HttpServer> httpEndPointReady = configureTheHTTPServer();
+
+	        // Publish on dashboard
+	        publishHttpEndpoint("order", "localhost", config().getInteger("http.port", port), ar -> {
+	            if (ar.failed()) {
+	                ar.cause().printStackTrace();
+	            } else {
+	                System.out.println("rabbit mq (Api) has been published: on port " + port + " " + ar.succeeded());
+	            }
+	        });
+	    }
+	    
+	    private Future<HttpServer> configureTheHTTPServer() {
+	        Future<HttpServer> httpServerFuture = Future.future();
+
+	        // Use a Vert.x web router for this REST API
+	        Router router = Router.router(vertx);
+
+	        vertx.createHttpServer().requestHandler(router::accept).listen(port, httpServerFuture.completer());
+	        return httpServerFuture;
+	    }
+	    
+	   
+	    public boolean checkNullOrEmptyInt(RoutingContext c, String s, String key) {
+
+	        Map<String, Object> resultMap = new HashMap<String, Object>();
+	        resultMap.put("success", 0);
+	        resultMap.put("Message", key + " is required and cannot be null");
+	        resultMap.put("data", "null");
+
+	        try {
+	            if (s == null || s.equalsIgnoreCase("")) {
+	                if (!s.contains(",") && !(Integer.parseInt(s) > 0)) {
+	                    Common.getHeaders(c).setStatusCode(200).end(Json.encodePrettily(resultMap));
+	                    return true;
+	                }
+	            }
+
+	        } catch (Exception e) {
+	        	Common.getHeaders(c).setStatusCode(200).end(Json.encodePrettily(resultMap));
+	            return true;
+	        }
+
+	        return false;
+	    }
+
+	    public boolean isJSONValid(String test) {
+	        try {
+	        	System.out.println(test);
+	            new JsonObject(test);
+	        } catch (Exception ex) {
+	            try {
+	                new JsonArray(test);
+	            } catch (Exception ex1) {
+	                return false;
+	            }
+	        }
+	        return true;
+	    }
+
+}

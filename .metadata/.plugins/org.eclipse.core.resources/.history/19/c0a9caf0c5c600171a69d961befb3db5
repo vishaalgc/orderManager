@@ -1,0 +1,28 @@
+package services;
+
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+
+public class Services {
+	public static JsonObject createOrder(JsonObject inputJson) {
+		JsonObject result = new JsonObject();
+		if(inputJson.containsKey("product_id"))
+		{
+			String product_id =  inputJson.getValue("product_id").toString();
+			String firstname =  inputJson.getValue("firstname").toString();
+			String lastname =  inputJson.getValue("lastname") != null ? inputJson.getValue("lastname").toString() : null;
+			String email =  inputJson.getValue("email").toString();
+			String phone =  inputJson.getValue("phone").toString();
+			String price =  inputJson.getValue("price").toString();
+			String quantity =  inputJson.getValue("quantity").toString();
+			
+			// Validate Product API Call
+			
+			// Create an Order
+			
+		}
+		return result;
+	}
+
+
+}

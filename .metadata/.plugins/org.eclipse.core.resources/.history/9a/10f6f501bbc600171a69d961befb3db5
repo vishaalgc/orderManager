@@ -1,0 +1,15 @@
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.xoxo.microservices.clientservices.constants.ClientsConstants;
+
+import io.vertx.core.Vertx;
+
+public class OrderServiceEndPoint {
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		final Vertx vertx = Vertx.vertx();
+		vertx.deployVerticle(new ClientVertical());
+		vertx.deployVerticle(new ClientsV2Vertical());
+	}
+}

@@ -1,0 +1,5 @@
+package constants;
+
+public class Constants {
+	public static final String SMS_API_KEY = "183244AXz0rBY2Qs5a06dccc";
+}

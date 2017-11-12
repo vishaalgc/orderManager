@@ -1,0 +1,64 @@
+package services;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+
+import org.simplejavamail.email.Email;
+import org.simplejavamail.email.EmailBuilder;
+import org.simplejavamail.mailer.Mailer;
+
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
+import constants.Constants;
+import io.vertx.core.json.JsonObject;
+
+public class Services {
+	public static boolean sendSms(JsonObject data) {
+		if(data == null)
+			return false;
+		String number = data.getString("phone");
+		String message = "Your meesho order #"+data.getString("order_id")+" for Rs."+data.getValue("price").toString()+"has been successfully placed";
+		
+		number = "91"+number;
+		try {
+			message = URLEncoder.encode(message,"UTF-8");
+			HttpResponse<String> response = Unirest.get("http://api.msg91.com/api/sendhttp.php?"
+					+ "sender=MSGIND&route=4&mobiles="+number+
+					"&authkey="+Constants.SMS_API_KEY
+					+ "&encrypt=&country=0"
+					+ "&message="+message)
+					  .asString();
+			System.out.println(response.getBody());
+		} catch (UnirestException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static boolean SendEmail(JsonObject data) {
+		if(data == null)
+			return false;
+		
+		Email email = new EmailBuilder()
+			    .from("Meesho", data.getString("fromEmail"))
+			    .to("C. Cane", data.getString("toEmail"))
+			    //.cc("C. Bo <chocobo@candyshop.org>")
+			    .subject("hey")
+			    .text("We should meet up! ;)")
+			    .build();
+
+			new Mailer().sendMail(email);
+			
+		return false;
+		
+	}
+	
+}

@@ -1,0 +1,7 @@
+package verticles;
+
+import common.MicroServiceVerticle;
+
+public class OrderVerticle extends MicroServiceVerticle {
+	
+}

@@ -1,0 +1,5 @@
+package verticles;
+
+public class ProductVerticle {
+
+}

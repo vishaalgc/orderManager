@@ -1,0 +1,38 @@
+package verticles;
+
+import common.MicroServiceVerticle;
+import io.vertx.core.Future;
+import io.vertx.core.http.HttpServer;
+import io.vertx.ext.web.Router;
+
+public class OrderVerticle extends MicroServiceVerticle {
+	 private int port = 8081;
+
+	    @Override
+	    public void start(Future<Void> future) throws Exception {
+	        super.start();
+
+	        Future<HttpServer> httpEndPointReady = configureTheHTTPServer();
+
+	        // Publish on dashboard
+	        publishHttpEndpoint("order", "localhost", config().getInteger("http.port", port), ar -> {
+	            if (ar.failed()) {
+	                ar.cause().printStackTrace();
+	            } else {
+	                System.out.println("ClientServices (Api) has been published: on port " + port + " " + ar.succeeded());
+	            }
+	        });
+	    }
+	    
+	    private Future<HttpServer> configureTheHTTPServer() {
+	        Future<HttpServer> httpServerFuture = Future.future();
+
+	        // Use a Vert.x web router for this REST API
+	        Router router = Router.router(vertx);
+
+	        // Order APIs
+	        
+	        vertx.createHttpServer().requestHandler(router::accept).listen(port, httpServerFuture.completer());
+	        return httpServerFuture;
+	    }
+}

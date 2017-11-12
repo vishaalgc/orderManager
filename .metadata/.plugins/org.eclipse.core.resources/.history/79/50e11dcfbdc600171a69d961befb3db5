@@ -1,0 +1,124 @@
+package services;
+
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+
+public class Services {
+	public static JsonObject createOrder(JsonObject inputJson) {
+		JsonObject result = new JsonObject();
+		if(inputJson.containsKey("product_id"))
+		{
+			String product_id = (String) inputJson.getValue("product_id");
+			String firstname = (String) inputJson.getValue("firstname");
+			String lastname = (String) inputJson.getValue("lastname");
+			String email = (String) inputJson.getValue("email");
+			String phone = (String) inputJson.getValue("phone");
+			String price = (String) inputJson.getValue("price");
+			String quantity = (String) inputJson.getValue("quantity");
+			Integer price_int = null;
+			price_int = Integer.parseInt(price);
+			Integer qyt_int = null;
+			qyt_int = Integer.parseInt(quantity);
+			Integer singlePrice = price_int/qyt_int;
+			
+			
+			JsonObject productDetails = productArray.getJsonObject(0);
+			if(productDetails == null || productDetails.isEmpty())
+			{	
+				result.put("Error", "Product id Doesnt Exist");
+				return result;
+			}
+			JsonObject product = productDetails.getJsonObject("product");
+			if(product == null || product.isEmpty())
+			{
+				result.put("Error", "Product Doesnt Exist");
+				return result;
+			}
+			Boolean isValidForPresent = false;
+			String user_type_name = null;
+			JsonArray sell_price = null;
+			if(productDetails.containsKey("special_price") && special != null && special.equals("1")){
+				JsonArray splPrice = productDetails.getJsonArray("special_price");
+				if(splPrice != null && !splPrice.isEmpty())
+					sell_price = splPrice;
+			}
+			else
+				sell_price = productDetails.getJsonArray("sell_price");
+			
+			JsonArray slot = productDetails.getJsonArray("slot");
+			if(slot == null || slot.isEmpty()){
+				result.put("Error", "Your time slot is in either invalid format or is currently not available for this product, Format for timeslot is eg: 09:00 AM");
+				return result;
+			}
+			for (int i = 0; i < sell_price.size(); i++) {
+				Object obj = sell_price.getJsonObject(i).getValue("id");
+				String objVal = null;
+				if(obj instanceof String){
+					objVal = obj.toString();
+				}
+				else if(obj instanceof Integer){
+					objVal = sell_price.getJsonObject(i).getInteger("id").toString();
+				}
+				if(objVal.equals(user_type_id)){
+					Object pri_str = sell_price.getJsonObject(i).getValue("price");
+					Integer pri_int = null;
+					user_type_name = sell_price.getJsonObject(i).getString("name");
+					pri_int = Integer.parseInt(pri_str.toString());
+					Integer finalCost = pri_int * qyt_int;
+					if(!price_int.equals(finalCost))
+					{
+						result.put("Error", "Given price doesnt match with the products price");
+						return result;
+					}
+					else
+					{
+						isValidForPresent = true;
+						break;
+					}
+				}
+			}
+			
+			
+			if(!slot.contains(time_slot)){
+				result.put("Error", "Your time slot is in either invalid format or is currently not available for this product, format for timeslot is eg: 09:00 AM");
+				return result;
+			}
+			if(!isValidForPresent)
+			{
+				result.put("Error", "User type id doesnt exist with this product");
+				return result;
+			}
+			
+			
+			JsonObject extraPersonsObject = CommonServices.GetExtraPersonObject();
+			crt.setOrderProduct(product.getValue("product_id").toString(),
+					product.getValue("name").toString(),
+					quantity,singlePrice.toString(),user_type_id,
+					product.getValue("city_id").toString(),
+					product.getValue("category_id").toString(),
+					time_slot,user_type_id.equals("3") && group_size != null ? group_size : (extraPersonsObject.containsKey(user_type_id) ? extraPersonsObject.getValue(user_type_id).toString() : null));
+			try {
+				String jo = crt.getOrderJson();
+				System.out.println(jo);
+				result = CommonServices.createOrder(jo);
+				Boolean error = result.getBoolean("Error");
+				if(!error)
+				{
+					return confirmOrder(result.getValue("order_id").toString(),partner_key,user_type_name);
+				}
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (UnirestException e) {
+				// TODO Auto-generated catch block	
+				System.out.println(e);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+
+}

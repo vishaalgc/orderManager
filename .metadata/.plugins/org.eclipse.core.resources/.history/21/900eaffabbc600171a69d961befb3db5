@@ -1,0 +1,23 @@
+package verticles;
+
+import common.MicroServiceVerticle;
+
+public class OrderVerticle extends MicroServiceVerticle {
+	 private int port = 8081;
+
+	    @Override
+	    public void start(Future<Void> future) throws Exception {
+	        super.start();
+
+	        Future<HttpServer> httpEndPointReady = configureTheHTTPServer();
+
+	        // Publish on dashboard
+	        publishHttpEndpoint("order", "localhost", config().getInteger("http.port", port), ar -> {
+	            if (ar.failed()) {
+	                ar.cause().printStackTrace();
+	            } else {
+	                System.out.println("ClientServices (Api) has been published: on port " + port + " " + ar.succeeded());
+	            }
+	        });
+	    }
+}

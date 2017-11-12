@@ -1,0 +1,10 @@
+package services;
+
+public class Services {
+	
+	public static boolean SendEmail(JsonObject data) {
+		if(data == null)
+			return false;
+	}
+
+}

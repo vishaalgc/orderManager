@@ -1,0 +1,8 @@
+package services;
+
+public class Services {
+
+	public void generateInvoice(JsonObject data) {
+		
+	}
+}

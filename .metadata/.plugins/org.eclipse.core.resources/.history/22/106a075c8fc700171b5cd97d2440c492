@@ -1,0 +1,69 @@
+package services;
+
+public class Services {
+	public static boolean sendSms(JsonObject data) {
+		if(data == null)
+			return false;
+		String number = data.getString("phone");
+		String message = "Your meesho order #"+data.getString("order_id")+" for Rs."+data.getValue("price").toString()+"has been successfully placed";
+		
+		number = "91"+number;
+		try {
+			message = URLEncoder.encode(message,"UTF-8");
+			HttpResponse<String> response = Unirest.get("http://api.msg91.com/api/sendhttp.php?"
+					+ "sender=MSGIND&route=4&mobiles="+number+
+					"&authkey="+Constants.SMS_API_KEY
+					+ "&encrypt=&country=0"
+					+ "&message="+message)
+					  .asString();
+			System.out.println(response.getBody());
+		} catch (UnirestException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+
+	
+	public static boolean Email(JsonObject data) {
+		try{
+            String host ="smtp.gmail.com" ;
+            String user = "vishaalgc@gmail.com";
+            String pass = "jayasekhar12";
+            String to = data.getString("toEmail");
+            String from = "vishaalgc@gmail.com";
+            String subject = data.getString("emailSubject");
+            String messageText = data.getString("emailContent");
+            boolean sessionDebug = false;
+
+            Properties props = System.getProperties();
+
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", host);
+            props.put("mail.smtp.port", "587");
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.required", "true");
+
+            java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+            Session mailSession = Session.getDefaultInstance(props, null);
+            mailSession.setDebug(sessionDebug);
+            Message msg = new MimeMessage(mailSession);
+            msg.setFrom(new InternetAddress(from));
+            InternetAddress[] address = {new InternetAddress(to)};
+            msg.setRecipients(Message.RecipientType.TO, address);
+            msg.setSubject(subject); msg.setSentDate(new Date());
+            msg.setText(messageText);
+
+           Transport transport=mailSession.getTransport("smtp");
+           transport.connect(host, user, pass);
+           transport.sendMessage(msg, msg.getAllRecipients());
+           transport.close();
+           System.out.println("message send successfully");
+        }catch(Exception ex)
+        {
+            System.out.println(ex);
+        }
+		return true;;
+	}
+}

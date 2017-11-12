@@ -1,0 +1,25 @@
+package services;
+
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
+import io.vertx.core.json.JsonObject;
+
+public class Services {
+
+	public void generateInvoice(JsonObject data) {
+		try {
+			HttpResponse<String> response = Unirest.post("https://invoice-generator.com/")
+					  .header("cache-control", "no-cache")
+					  .header("postman-token", "5baf18fa-d05b-10c7-622f-8209f9a8fd98")
+					  .body("{\"from\":\"Invoiced, Inc.\",\"to\":\"Parag\",\"logo\":\"https://invoiced.com/img/logo-invoice.png\",\"number\":1,\"items\":[{\"name\":\"Starter plan\",\"quantity\":1,\"unit_cost\":99}],\"notes\":\"Thanks for your business!\"}")
+					  .asString();
+			System.out.println(response.getBody());
+		} catch (UnirestException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+}

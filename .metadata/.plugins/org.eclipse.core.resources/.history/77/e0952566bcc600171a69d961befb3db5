@@ -1,0 +1,237 @@
+package verticles;
+
+import common.MicroServiceVerticle;
+import io.vertx.core.Future;
+import io.vertx.core.http.HttpServer;
+import io.vertx.ext.web.Router;
+
+public class OrderVerticle extends MicroServiceVerticle {
+	 private int port = 8081;
+
+	    @Override
+	    public void start(Future<Void> future) throws Exception {
+	        super.start();
+
+	        Future<HttpServer> httpEndPointReady = configureTheHTTPServer();
+
+	        // Publish on dashboard
+	        publishHttpEndpoint("order", "localhost", config().getInteger("http.port", port), ar -> {
+	            if (ar.failed()) {
+	                ar.cause().printStackTrace();
+	            } else {
+	                System.out.println("Order Microservices (Api) has been published: on port " + port + " " + ar.succeeded());
+	            }
+	        });
+	    }
+	    
+	    private Future<HttpServer> configureTheHTTPServer() {
+	        Future<HttpServer> httpServerFuture = Future.future();
+
+	        // Use a Vert.x web router for this REST API
+	        Router router = Router.router(vertx);
+
+	        // Order APIs
+	        router.post("/createOrder").handler(this::createOrder);
+	        
+	        // CORS OPTIONS
+	        router.options("/createOrder").handler(this::createOrder);
+	        
+	        vertx.createHttpServer().requestHandler(router::accept).listen(port, httpServerFuture.completer());
+	        return httpServerFuture;
+	    }
+	    
+	    public void createOrder(RoutingContext routingContext) {
+
+
+	        routingContext.request().bodyHandler(new Handler<Buffer>() {
+	            @Override
+	            public void handle(Buffer event) {
+
+
+	                vertx.executeBlocking(future -> {
+	                    String partner_key = routingContext.request().getHeader("key");
+	                    if (checkNullOrEmptyInt(routingContext, partner_key, "key")) {
+	                        future.fail("-1");
+	                        return;
+	                    }
+
+	                    if (!isJSONValid(event.toString())) {
+	                        JsonObject temp = new JsonObject();
+	                        temp.put("Error", "The given post data is not a valid json format");
+	                        future.complete(temp);
+	                        return;
+	                    }
+	                    JsonObject params = new JsonObject(event.toString());
+	                    JsonObject dataObject = null;
+	                    if (params.containsKey("data")) {
+	                    	Object val = params.getValue("data");
+	                    	if(val instanceof String){
+	                    		dataObject = new JsonObject(val.toString());
+	                    	}
+	                    	else if(val instanceof JsonObject)
+	                    		dataObject = params.getJsonObject("data");
+	                    	else {
+	                    		JsonObject temp = new JsonObject();
+	                    		temp.put("Error", "The given post data is not a valid json format");
+	                            future.complete(temp);
+	                            return;
+	                    	}
+	                        if (dataObject == null)
+	                            future.complete(null);
+	                    } else {
+	                        JsonObject temp = new JsonObject();
+	                        temp.put("Error", "post data format is not proper");
+	                        future.complete(temp);
+	                        return;
+	                    }
+	                    try {
+	                        String product_id = (String) dataObject.getValue("product_id");
+	                        String firstname = (String) dataObject.getValue("firstname");
+	                        String lastname = (String) dataObject.getValue("lastname");
+	                        String email = (String) dataObject.getValue("email");
+	                        String phone = (String) dataObject.getValue("phone");
+	                        String quantity = (String) dataObject.getValue("quantity");
+	                        String price = (String) dataObject.getValue("price");
+	                        String reference_id = (String) dataObject.getValue("reference_id");
+	                        String user_type_id = (String) dataObject.getValue("user_type_id");
+	                        String userAgent = routingContext.request().getHeader("User-Agent");
+	                        String date_time = (String) dataObject.getValue("date");
+	                        String time_slot = (String) dataObject.getValue("time_slot");
+	                        String group_size = (String) dataObject.getValue("group_size");
+	                        String special = dataObject.getValue("special") != null ? dataObject.getValue("special").toString() : null;
+	                        String ipAddress = routingContext.request().remoteAddress().toString();
+	                        dataObject.put("userAgent", userAgent);
+	                        dataObject.put("IPAddress", ipAddress);
+	                        if (checkNullOrEmptyInt(routingContext, product_id, "product_id")) {
+	                            future.fail("-1");
+	                            return;
+	                        } else if (checkNullOrEmptyInt(routingContext, firstname, "firstname")) {
+	                            future.fail("-1");
+	                            return;
+	                        } else if (checkNullOrEmptyInt(routingContext, email, "email")) {
+	                            future.fail("-1");
+	                            return;
+	                        } else if (checkNullOrEmptyInt(routingContext, phone, "phone")) {
+	                            future.fail("-1");
+	                            return;
+	                        } else if (checkNullOrEmptyInt(routingContext, quantity, "quantity")) {
+	                            future.fail("-1");
+	                            return;
+	                        } else if (checkNullOrEmptyInt(routingContext, price, "price")) {
+	                            future.fail("-1");
+	                            return;
+	                        } else if (checkNullOrEmptyInt(routingContext, reference_id, "reference_id")) {
+	                            future.fail("-1");
+	                            return;
+	                        } else if (checkNullOrEmptyInt(routingContext, user_type_id, "user_type_id")) {
+	                            future.fail("-1");
+	                            return;
+	                        } else if (checkNullOrEmptyInt(routingContext, date_time, "date")) {
+	                            future.fail("-1");
+	                            return;
+	                        } else if (checkNullOrEmptyInt(routingContext, time_slot, "time_slot")) {
+	                            future.fail("-1");
+	                            return;
+	                        }
+
+	                        if (special != null) {
+	                            if (special.equals("1") || special.equals("0")) {
+
+	                            } else {
+	                                ThrowError(routingContext, "special");
+	                                return;
+	                            }
+	                        }
+
+
+	                        if (!isNumeric(product_id)) {
+	                            ThrowError(routingContext, "product_id");
+	                            return;
+	                        }
+	                        if (!isNumeric(price)) {
+	                            ThrowError(routingContext, "price");
+	                            return;
+	                        }
+	                        if (!isNumeric(quantity)) {
+	                            ThrowError(routingContext, "quantity");
+	                            return;
+	                        }
+	                        if (!isNumeric(user_type_id)) {
+	                            ThrowError(routingContext, "user_type_id");
+	                            return;
+	                        }
+	                        if (!DateFormatCheck(date_time)) {
+	                            future.complete("date format is invalid, correct format is yyyy-MM-dd");
+	                            return;
+	                        }
+	                        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+	                        Date today = new Date();
+	                        Date todayWithZeroTime = formatter.parse(formatter.format(today));
+	                        if (new SimpleDateFormat("yyyy-MM-dd").parse(date_time).before(todayWithZeroTime)) {
+	                            future.complete(new JsonObject().put("Error", "date is past present date"));
+	                            return;
+	                        }
+
+	                        if (user_type_id.toString().equals("3")) {
+	                            if (group_size == null) {
+	                                ThrowError(routingContext, "group_size");
+	                                return;
+	                            }
+	                        }
+
+	                        future.complete(CouchServices.createOrder(dataObject, partner_key));
+	                    } catch (Exception e) {
+	                        // TODO Auto-generated catch block
+	                        e.printStackTrace();
+	                    }
+	                }, asyncResult -> {
+	                    if (asyncResult.succeeded()) {
+	                        System.out.println("inside asyncResult success");
+	                        Map<String, Object> resultMap = new HashMap<String, Object>();
+	                        JsonObject result = new JsonObject();
+	                        if (asyncResult.result() instanceof JsonObject) {
+	                            result = (JsonObject) asyncResult.result();
+	                            System.out.println(result);
+	                            if (asyncResult.result() != null) {
+	                                if (result.containsKey("Error")) {
+	                                    if (result.getValue("Error") instanceof Boolean) {
+	                                        if ((boolean) result.getValue("Error")) {
+	                                            resultMap.put("Message", result.getValue("Error") instanceof Boolean ? result.getValue("Message") : result.getString("Error"));
+	                                            resultMap.put("success", 0);
+	                                            resultMap.put("data", null);
+	                                        } else {
+	                                            resultMap.put("success", 1);
+	                                            resultMap.put("data", result);
+	                                        }
+	                                    } else {
+	                                        resultMap.put("Message", result.getValue("Error") instanceof Boolean ? result.getValue("Message") : result.getString("Error"));
+	                                        resultMap.put("success", 0);
+	                                        resultMap.put("data", null);
+	                                    }
+	                                } else {
+	                                    resultMap.put("success", 1);
+	                                    resultMap.put("data", asyncResult.result());
+	                                }
+	                            } else {
+	                                resultMap.put("success", 0);
+	                                resultMap.put("data", null);
+	                                resultMap.put("Message", "Experience not found");
+	                            }
+	                        } else {
+	                            resultMap.put("success", 0);
+	                            resultMap.put("data", null);
+	                            resultMap.put("Message", asyncResult.result());
+	                        }
+	                        ClientCommons.getHeaders(routingContext).setStatusCode(200).end(Json.encodePrettily(resultMap));
+	                    }
+	                    if (asyncResult.failed() && asyncResult.cause().toString().equalsIgnoreCase("-1")) {
+	                        System.out.println("inside result failed, cause: " + asyncResult.cause().toString());
+	                        ClientCommons.getHeaders(routingContext).setStatusCode(200).end(Json.encodePrettily("Result Failed"));
+	                    }
+	                });
+
+	            }
+	        });
+
+	    }
+}

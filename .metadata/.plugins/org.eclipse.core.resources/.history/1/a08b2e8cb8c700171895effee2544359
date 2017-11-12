@@ -1,0 +1,168 @@
+package services;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.Date;
+import java.util.Properties;
+import java.util.concurrent.TimeoutException;
+
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import org.simplejavamail.email.Email;
+import org.simplejavamail.email.EmailBuilder;
+import org.simplejavamail.mailer.Mailer;
+
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+
+import constants.Constants;
+import io.vertx.core.json.JsonObject;
+
+
+public class Services {
+	public static boolean sendSms(JsonObject data) {
+		if(data == null)
+			return false;
+		String number = data.getString("phone");
+		String message = "Your meesho order #"+data.getString("order_id")+" for Rs."+data.getValue("price").toString()+"has been successfully placed";
+		try {
+			message = URLEncoder.encode(message,"UTF-8");
+			HttpResponse<String> response = Unirest.get("https://freesms8.p.mashape.com/index.php?msg="+message+"&phone="+number+"&pwd=1844&uid=7415169372")
+					.header("X-Mashape-Key", Constants.SMS_API_KEY)
+					.asString();
+			
+			/*HttpResponse<String> response = Unirest.post("https://clicksend.p.mashape.com/sms/send")
+					.header("Authorization", "Basic dmlzaGFhbGdjOnRlZG1vc2J5")
+					.header("X-Mashape-Key", "YuNe1uEzgnmshn2wHuEcsvk4vjLXp1TfCfyjsn3S8bv001QQzE")
+					.header("Content-Type", "application/json")
+					.header("Accept", "application/json")
+					.body("{\"messages\":[{\"source\":\"mashape\",\"from\":\"Test\",\"body\":\"This is a test\",\"to\":\"+918309055670\",\"schedule\":\"1452244637\",\"custom_string\":\"this is a test\"}]}")
+					.asString();*/
+			
+			System.out.println(response.getBody());
+		} catch (UnirestException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static boolean createReceipt(JsonObject data) {
+		try {
+			JsonObject postObj = new JsonObject();
+			postObj.put("productName", data.getString("product_name"));
+			postObj.put("billedTo", data.getString("customerName"));
+			postObj.put("quantity", data.getString("quantity"));
+			postObj.put("order_id", data.getString("order_id"));
+			postObj.put("price", data.getString("price"));
+			
+			HttpResponse<String> response = Unirest.post("http://localhost:8081/createInvoice")
+					.header("content-type", "application/json")
+					.body(data.toString())
+					.asString();
+			
+			if(response == null)
+				return false;
+			JsonObject resp = new JsonObject(response.toString());
+			if(resp.containsKey("success") && resp.getInteger("success") == 1) {
+				return true;
+			}
+		} catch (UnirestException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	
+	public static boolean Email(JsonObject data) {
+		try{
+			
+            String host ="smtp.gmail.com" ;
+            String user = "vishaalgc@gmail.com";
+            String pass = "jayasekhar12";
+            String to = data.getString("toEmail");
+            String from = "vishaalgc@gmail.com";
+            String subject = data.getString("emailSubject");
+            String messageText = data.getString("emailContent");
+            boolean sessionDebug = false;
+
+            Properties props = System.getProperties();
+
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", host);
+            props.put("mail.smtp.port", "587");
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.required", "true");
+
+            java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+            Session mailSession = Session.getDefaultInstance(props, null);
+            mailSession.setDebug(sessionDebug);
+            Message msg = new MimeMessage(mailSession);
+            msg.setFrom(new InternetAddress(from));
+            InternetAddress[] address = {new InternetAddress(to)};
+            msg.setRecipients(Message.RecipientType.TO, address);
+            msg.setSubject(subject); msg.setSentDate(new Date());
+            msg.setText(messageText);
+            
+            if(createReceipt(data)) {
+            	// send attachment
+            	MimeBodyPart temp = new MimeBodyPart();
+            	String filename = "/home/manisha/file.txt";
+            	DataSource source = new FileDataSource(filename);
+            	messageBodyPart.setDataHandler(new DataHandler(source));
+            	messageBodyPart.setFileName(filename);
+            	multipart.addBodyPart(messageBodyPart);
+
+            }
+            else {
+            	// send footer msg
+            }
+           Transport transport=mailSession.getTransport("smtp");
+           transport.connect(host, user, pass);
+           transport.sendMessage(msg, msg.getAllRecipients());
+           transport.close();
+           System.out.println("message sent successfully");
+        }catch(Exception ex)
+        {
+            System.out.println(ex);
+        }
+		return true;
+	}
+	private final static String QUEUE_NAME = "hello";
+	
+	public static boolean RabbitMqPush(JsonObject data) {
+		ConnectionFactory factory = new ConnectionFactory();
+	    factory.setHost("localhost");
+	    Connection connection;
+		try {
+			connection = factory.newConnection();
+			Channel channel = connection.createChannel();
+		    
+		    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+		    channel.basicPublish("", QUEUE_NAME, null, data.toString().getBytes());
+		    System.out.println(" [x] Sent '" + data + "'");
+
+		    channel.close();
+		    connection.close();
+		} catch (IOException | TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    return true;
+	}
+}
+

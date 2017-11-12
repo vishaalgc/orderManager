@@ -1,0 +1,14 @@
+package services;
+
+import io.vertx.core.json.JsonObject;
+
+public class Services {
+
+	public void generateInvoice(JsonObject data) {
+		HttpResponse<String> response = Unirest.post("https://invoice-generator.com/")
+				  .header("cache-control", "no-cache")
+				  .header("postman-token", "5baf18fa-d05b-10c7-622f-8209f9a8fd98")
+				  .body("{\"from\":\"Invoiced, Inc.\",\"to\":\"Parag\",\"logo\":\"https://invoiced.com/img/logo-invoice.png\",\"number\":1,\"items\":[{\"name\":\"Starter plan\",\"quantity\":1,\"unit_cost\":99}],\"notes\":\"Thanks for your business!\"}")
+				  .asString();
+	}
+}

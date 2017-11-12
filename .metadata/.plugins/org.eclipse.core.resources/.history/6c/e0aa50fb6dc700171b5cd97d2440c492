@@ -1,0 +1,13 @@
+package services;
+
+import io.vertx.core.json.JsonObject;
+
+public class Services {
+	
+	public static boolean SendEmail(JsonObject data) {
+		if(data == null)
+			return false;
+		
+	}
+
+}

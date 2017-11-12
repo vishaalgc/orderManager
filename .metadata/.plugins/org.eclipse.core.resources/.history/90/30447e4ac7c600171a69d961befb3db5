@@ -1,0 +1,41 @@
+package services;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.mashape.unirest.http.exceptions.UnirestException;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+
+public class Services {
+	public static JsonObject createOrder(JsonObject inputJson) {
+		String response = null;
+		if(inputJson.containsKey("product_id"))
+		{
+			// Validate Product API Call
+			
+			// Create an Order
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			Date date = new Date();
+			inputJson.put("createdAt",dateFormat.format(date));
+			try {
+				response = Connector.postData(null, inputJson);
+			} catch (UnirestException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(response == null)
+			return null;
+		JsonObject resp = new JsonObject(response);
+		if(resp.containsKey("ok")) {
+			JsonObject output = new JsonObject();
+			output.put("order_id", resp.getString("id"));
+			output.put("message", "order created successfully");
+			return output;
+		}
+		return null;
+	}
+
+}

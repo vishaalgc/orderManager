@@ -1,0 +1,88 @@
+package services;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.Properties;
+
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
+import constants.Constants;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.Session;
+
+public class Services {
+	public static boolean sendSms(JsonObject data) {
+		if(data == null)
+			return false;
+		String number = data.getString("phone");
+		String message = "Your meesho order #"+data.getString("order_id")+" for Rs."+data.getValue("price").toString()+"has been successfully placed";
+		
+		number = "91"+number;
+		try {
+			message = URLEncoder.encode(message,"UTF-8");
+			HttpResponse<String> response = Unirest.get("http://api.msg91.com/api/sendhttp.php?"
+					+ "sender=MSGIND&route=4&mobiles="+number+
+					"&authkey="+Constants.SMS_API_KEY
+					+ "&encrypt=&country=0"
+					+ "&message="+message)
+					  .asString();
+			System.out.println(response.getBody());
+		} catch (UnirestException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static boolean sendEmail()
+	{
+		// Recipient's email ID needs to be mentioned.
+	      String to = "abcd@gmail.com";
+
+	      // Sender's email ID needs to be mentioned
+	      String from = "vishaalgc@gmail.com";
+
+	      // Assuming you are sending email from localhost
+	      String host = "localhost";
+
+	      // Get system properties
+	      Properties properties = System.getProperties();
+
+	      // Setup mail server
+	      properties.setProperty("mail.smtp.host", host);
+
+	      // Get the default Session object.
+	      Session session = Session.getDefaultInstance(properties);
+
+	      try {
+	         // Create a default MimeMessage object.
+	         MimeMessage message = new MimeMessage(session);
+
+	         // Set From: header field of the header.
+	         message.setFrom(new InternetAddress(from));
+
+	         // Set To: header field of the header.
+	         message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+
+	         // Set Subject: header field
+	         message.setSubject("This is the Subject Line!");
+
+	         // Now set the actual message
+	         message.setText("This is actual message");
+
+	         // Send message
+	         Transport.send(message);
+	         System.out.println("Sent message successfully....");
+	      } catch (MessagingException mex) {
+	         mex.printStackTrace();
+	      }
+	}
+	
+}

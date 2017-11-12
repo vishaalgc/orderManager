@@ -1,0 +1,5 @@
+package verticles;
+
+public class OrderVerticle extends MicroServiceVerticle {
+	
+}
