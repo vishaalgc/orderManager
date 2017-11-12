@@ -33,7 +33,7 @@ public class RabbitMqVerticle extends MicroServiceVerticle {
 	            	Services.sendSms(data);
 	          }
 	        };
-	        channel.basicConsume(Constants.QUEUE_NAME, true, consumer);  
+	        channel.basicConsume(QUEUE_NAME, true, consumer);  
 	    }
 	    
 

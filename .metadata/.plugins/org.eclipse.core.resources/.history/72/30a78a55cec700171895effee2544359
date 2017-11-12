@@ -30,7 +30,7 @@ public class SmsVerticle extends MicroServiceVerticle {
 	            if (ar.failed()) {
 	                ar.cause().printStackTrace();
 	            } else {
-	                System.out.println("Communication Microservices (Api) has been published: on port " + port + " " + ar.succeeded());
+	                System.out.println("SMS Microservices (Api) has been published: on port " + port + " " + ar.succeeded());
 	            }
 	        });
 	    }

@@ -30,7 +30,7 @@ public class SmsVerticle extends MicroServiceVerticle {
 	            if (ar.failed()) {
 	                ar.cause().printStackTrace();
 	            } else {
-	                System.out.println("Communication Microservices (Api) has been published: on port " + port + " " + ar.succeeded());
+	                System.out.println("SMS Microservices (Api) has been published: on port " + port + " " + ar.succeeded());
 	            }
 	        });
 	    }
@@ -126,13 +126,13 @@ public class SmsVerticle extends MicroServiceVerticle {
 	                            }
 	                            else if (asyncResult.result() != null) {
 	                            	resultMap.put("success", 1);
-	 	                            resultMap.put("data", "Sms triggered succesfully");
+	 	                            resultMap.put("data", "Invoice generated Successfully");
 	 	                            resultMap.put("Message", asyncResult.result());
 	                            }
 	                            else {
 		                            resultMap.put("success", 0);
 		                            resultMap.put("data", null);
-		                            resultMap.put("Message", "There was an error while generating sms");
+		                            resultMap.put("Message", "There was an error while generating invoice");
 	                            }
 	                        }
 	                        Common.getHeaders(routingContext).setStatusCode(200).end(Json.encodePrettily(resultMap));

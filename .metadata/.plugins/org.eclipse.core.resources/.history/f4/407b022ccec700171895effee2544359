@@ -30,7 +30,7 @@ public class SmsVerticle extends MicroServiceVerticle {
 	            if (ar.failed()) {
 	                ar.cause().printStackTrace();
 	            } else {
-	                System.out.println("Communication Microservices (Api) has been published: on port " + port + " " + ar.succeeded());
+	                System.out.println("SMS Microservices (Api) has been published: on port " + port + " " + ar.succeeded());
 	            }
 	        });
 	    }
@@ -120,20 +120,35 @@ public class SmsVerticle extends MicroServiceVerticle {
 	                        if (asyncResult.result() instanceof JsonObject) {
 	                            result = (JsonObject) asyncResult.result();
 	                            System.out.println(result);
-	                            if(result != null && result.containsKey("Error")){
-	                            	 	resultMap.put("success", 0);
-			                            resultMap.put("data", result);
+	                            if (asyncResult.result() != null) {
+	                                if (result.containsKey("Error")) {
+	                                    if (result.getValue("Error") instanceof Boolean) {
+	                                        if ((boolean) result.getValue("Error")) {
+	                                            resultMap.put("Message", result.getValue("Error") instanceof Boolean ? result.getValue("Message") : result.getString("Error"));
+	                                            resultMap.put("success", 0);
+	                                            resultMap.put("data", null);
+	                                        } else {
+	                                            resultMap.put("success", 1);
+	                                            resultMap.put("data", result);
+	                                        }
+	                                    } else {
+	                                        resultMap.put("Message", result.getValue("Error") instanceof Boolean ? result.getValue("Message") : result.getString("Error"));
+	                                        resultMap.put("success", 0);
+	                                        resultMap.put("data", null);
+	                                    }
+	                                } else {
+	                                    resultMap.put("success", 1);
+	                                    resultMap.put("data", asyncResult.result());
+	                                }
+	                            } else {
+	                                resultMap.put("success", 0);
+	                                resultMap.put("data", null);
+	                                resultMap.put("Message", "Experience not found");
 	                            }
-	                            else if (asyncResult.result() != null) {
-	                            	resultMap.put("success", 1);
-	 	                            resultMap.put("data", "Sms triggered succesfully");
-	 	                            resultMap.put("Message", asyncResult.result());
-	                            }
-	                            else {
-		                            resultMap.put("success", 0);
-		                            resultMap.put("data", null);
-		                            resultMap.put("Message", "There was an error while generating sms");
-	                            }
+	                        } else {
+	                            resultMap.put("success", 0);
+	                            resultMap.put("data", null);
+	                            resultMap.put("Message", asyncResult.result());
 	                        }
 	                        Common.getHeaders(routingContext).setStatusCode(200).end(Json.encodePrettily(resultMap));
 	                    }
@@ -226,20 +241,35 @@ public class SmsVerticle extends MicroServiceVerticle {
 	                        if (asyncResult.result() instanceof JsonObject) {
 	                            result = (JsonObject) asyncResult.result();
 	                            System.out.println(result);
-	                            if(result != null && result.containsKey("Error")){
-	                            	 	resultMap.put("success", 0);
-			                            resultMap.put("data", result);
+	                            if (asyncResult.result() != null) {
+	                                if (result.containsKey("Error")) {
+	                                    if (result.getValue("Error") instanceof Boolean) {
+	                                        if ((boolean) result.getValue("Error")) {
+	                                            resultMap.put("Message", result.getValue("Error") instanceof Boolean ? result.getValue("Message") : result.getString("Error"));
+	                                            resultMap.put("success", 0);
+	                                            resultMap.put("data", null);
+	                                        } else {
+	                                            resultMap.put("success", 1);
+	                                            resultMap.put("data", result);
+	                                        }
+	                                    } else {
+	                                        resultMap.put("Message", result.getValue("Error") instanceof Boolean ? result.getValue("Message") : result.getString("Error"));
+	                                        resultMap.put("success", 0);
+	                                        resultMap.put("data", null);
+	                                    }
+	                                } else {
+	                                    resultMap.put("success", 1);
+	                                    resultMap.put("data", asyncResult.result());
+	                                }
+	                            } else {
+	                                resultMap.put("success", 0);
+	                                resultMap.put("data", null);
+	                                resultMap.put("Message", "Experience not found");
 	                            }
-	                            else if (asyncResult.result() != null) {
-	                            	resultMap.put("success", 1);
-	 	                            resultMap.put("data", "Email trigggerd successfully");
-	 	                            resultMap.put("Message", asyncResult.result());
-	                            }
-	                            else {
-		                            resultMap.put("success", 0);
-		                            resultMap.put("data", null);
-		                            resultMap.put("Message", "There was an error while generating email");
-	                            }
+	                        } else {
+	                            resultMap.put("success", 0);
+	                            resultMap.put("data", null);
+	                            resultMap.put("Message", asyncResult.result());
 	                        }
 	                        Common.getHeaders(routingContext).setStatusCode(200).end(Json.encodePrettily(resultMap));
 	                    }

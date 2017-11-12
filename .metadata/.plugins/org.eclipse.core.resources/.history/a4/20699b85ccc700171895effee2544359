@@ -99,9 +99,10 @@ public class Services {
 	
 	public static boolean Email(JsonObject data) {
 		try{
+			
             String host ="smtp.gmail.com" ;
-            String user = "rvk070893@gmail.com";
-            String pass = "harsha143";
+            String user = "vishaalgc@gmail.com";
+            String pass = "jayasekhar12";
             String to = data.getString("toEmail");
             String from = "vishaalgc@gmail.com";
             String subject = data.getString("emailSubject");
@@ -135,7 +136,7 @@ public class Services {
             	MimeBodyPart messageBodyPart2 = new MimeBodyPart();  
                 DataSource source = new FileDataSource(filename);  
                 messageBodyPart2.setDataHandler(new DataHandler(source));  
-                messageBodyPart2.setFileName(data.getString("order_id")+".pdf");  
+                messageBodyPart2.setFileName(filename);  
                 Multipart multipart = new MimeMultipart();  
                 multipart.addBodyPart(messageBodyPart1);  
                 multipart.addBodyPart(messageBodyPart2);  
@@ -156,7 +157,7 @@ public class Services {
         }
 		return true;
 	}
-	
+	private final static String QUEUE_NAME = "hello";
 	
 	public static boolean RabbitMqPush(JsonObject data) {
 		ConnectionFactory factory = new ConnectionFactory();
@@ -166,8 +167,8 @@ public class Services {
 			connection = factory.newConnection();
 			Channel channel = connection.createChannel();
 		    
-		    channel.queueDeclare(Constants.QUEUE_NAME, false, false, false, null);
-		    channel.basicPublish("", Constants.QUEUE_NAME, null, data.toString().getBytes());
+		    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+		    channel.basicPublish("", QUEUE_NAME, null, data.toString().getBytes());
 		    System.out.println(" [x] Sent '" + data + "'");
 
 		    channel.close();

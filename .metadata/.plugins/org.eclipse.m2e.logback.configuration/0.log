@@ -3161,3 +3161,59 @@ org.eclipse.core.runtime.CoreException: Launch configuration OrderServiceEndPoin
 2017-11-12 21:05:03,001 [Worker-132] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/main/resources
 2017-11-12 21:05:03,001 [Worker-132] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
 2017-11-12 21:05:03,001 [Worker-132] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/test/resources
+2017-11-12 22:41:34,828 [Worker-152] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:41:34,889 [Worker-152] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/main/resources
+2017-11-12 22:41:34,890 [Worker-152] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:41:34,890 [Worker-152] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/test/resources
+2017-11-12 22:41:38,467 [Worker-157] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:41:38,467 [Worker-157] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/main/resources
+2017-11-12 22:41:38,468 [Worker-157] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:41:38,469 [Worker-157] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/test/resources
+2017-11-12 22:42:05,514 [Worker-154] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:42:05,514 [Worker-154] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/main/resources
+2017-11-12 22:42:05,622 [Worker-154] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:42:05,622 [Worker-154] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/test/resources
+2017-11-12 22:50:44,009 [Worker-152] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:50:44,038 [Worker-152] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/main/resources
+2017-11-12 22:50:44,039 [Worker-152] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:50:44,039 [Worker-152] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/test/resources
+2017-11-12 22:51:00,179 [Worker-159] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:51:00,180 [Worker-159] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/main/resources
+2017-11-12 22:51:00,181 [Worker-159] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:51:00,181 [Worker-159] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/test/resources
+2017-11-12 22:52:04,909 [Worker-162] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:52:04,910 [Worker-162] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/main/resources
+2017-11-12 22:52:04,911 [Worker-162] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:52:04,911 [Worker-162] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/test/resources
+2017-11-12 22:52:07,476 [Worker-158] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:52:07,476 [Worker-158] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/main/resources
+2017-11-12 22:52:07,477 [Worker-158] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:52:07,477 [Worker-158] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/test/resources
+2017-11-12 22:53:19,175 [Worker-158] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:53:19,195 [Worker-158] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/main/resources
+2017-11-12 22:53:19,210 [Worker-158] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:53:19,210 [Worker-158] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/test/resources
+2017-11-12 22:53:32,275 [Worker-152] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:53:32,275 [Worker-152] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/main/resources
+2017-11-12 22:53:32,276 [Worker-152] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:53:32,276 [Worker-152] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/test/resources
+2017-11-12 22:53:37,071 [Worker-159] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:53:37,103 [Worker-159] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/main/resources
+2017-11-12 22:53:37,104 [Worker-159] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:53:37,104 [Worker-159] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/test/resources
+2017-11-12 22:53:57,091 [Worker-158] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:53:57,091 [Worker-158] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/main/resources
+2017-11-12 22:53:57,092 [Worker-158] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:53:57,092 [Worker-158] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/test/resources
+2017-11-12 22:54:11,840 [Worker-152] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:54:11,841 [Worker-152] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/main/resources
+2017-11-12 22:54:11,841 [Worker-152] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:54:11,841 [Worker-152] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/test/resources
+2017-11-12 22:54:27,321 [Worker-159] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:54:27,321 [Worker-159] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/main/resources
+2017-11-12 22:54:27,322 [Worker-159] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:54:27,322 [Worker-159] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/sms/src/test/resources
+2017-11-12 22:55:15,799 [Worker-152] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:55:15,799 [Worker-152] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/project/src/main/resources
+2017-11-12 22:55:15,800 [Worker-152] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2017-11-12 22:55:15,821 [Worker-152] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/silentshifter/eclipse-workspace-meesho/project/src/test/resources

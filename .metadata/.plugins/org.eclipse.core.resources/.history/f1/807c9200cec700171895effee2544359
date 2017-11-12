@@ -2,7 +2,6 @@ package verticles;
 import com.rabbitmq.client.*;
 
 import common.MicroServiceVerticle;
-import constants.Constants;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.json.JsonObject;
@@ -18,7 +17,7 @@ public class RabbitMqVerticle extends MicroServiceVerticle {
 	        factory.setHost("localhost");
 	        Connection connection = factory.newConnection();
 	        Channel channel = connection.createChannel();
-	        channel.queueDeclare(Constants.QUEUE_NAME, false, false, false, null);
+	        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 	        System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 
 	        Consumer consumer = new DefaultConsumer(channel) {
@@ -33,8 +32,10 @@ public class RabbitMqVerticle extends MicroServiceVerticle {
 	            	Services.sendSms(data);
 	          }
 	        };
-	        channel.basicConsume(Constants.QUEUE_NAME, true, consumer);  
+	        channel.basicConsume(QUEUE_NAME, true, consumer);  
 	    }
 	    
+	    
+  private final static String QUEUE_NAME = "hello";
 
 }
