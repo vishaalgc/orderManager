@@ -69,6 +69,11 @@ public class Services {
 					  .header("content-type", "application/json")
 					  .body(postObj.toString())
 					   .asString();
+			if(response == null) {
+				data.put("invoiceStatus","Failed");
+				createInvoiceRecord(data);
+				return new JsonObject().put("Error","There was an error while generating invoice");
+			}
 			InputStream is = response.getRawBody();
 			FileOutputStream fos = new FileOutputStream(new File(data.getString("order_id")+".pdf"));
 			int inByte;
@@ -91,6 +96,8 @@ public class Services {
 			
 		} catch (IOException | UnirestException e) {
 			// TODO Auto-generated catch block
+			data.put("invoiceStatus","Failed");
+			System.out.println(createInvoiceRecord(data));
 			e.printStackTrace();
 		}
 		return new JsonObject().put("Error","There was an error while generating invoice");

@@ -58,6 +58,39 @@ Sample INVOICES Database record:
 
 --------------------------------------------------------
 
+
+Sample Request for Create Order:
+
+curl -X POST \
+  http://localhost:8082/createOrder \
+  -H 'cache-control: no-cache' \
+  -H 'postman-token: c5092d6f-9d5f-b144-cef3-ebd0d3498ce5' \
+  -d '{
+	"data": {
+		"product_id": "32345",
+		"firstname": "vishaal",
+		"email" : "vishaalgc@gmail.com",
+		"phone" : "7415169372",
+		"quantity" : 1,
+		"price" : 5000,
+		"product_name" : "Adidas shoes"
+	}
+}'
+
+----------------------------------------------------------
+
+Sample Response from Create Order
+
+{
+    "data": "order created succesfully",
+    "Message": {
+        "order_id": "4728475e8f7f114f9bef3773b4000e7c"
+    },
+    "success": 1
+}
+
+---------------------------------------------------------
+
 Additional items to enhance the same project:
 
 Product Microservice to Validate a given products availability and price before placing order

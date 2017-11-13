@@ -1,0 +1,203 @@
+package verticles;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import common.Common;
+import common.MicroServiceVerticle;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpServer;
+import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
+
+public class InvoiceVerticle extends MicroServiceVerticle {
+	 private int port = 8081;
+
+	    @Override
+	    public void start(Future<Void> future) throws Exception {
+	        super.start();
+
+	        Future<HttpServer> httpEndPointReady = configureTheHTTPServer();
+
+	        // Publish on dashboard
+	        publishHttpEndpoint("order", "localhost", config().getInteger("http.port", port), ar -> {
+	            if (ar.failed()) {
+	                ar.cause().printStackTrace();
+	            } else {
+	                System.out.println("Invoice Microservices (Api) has been published: on port " + port + " " + ar.succeeded());
+	            }
+	        });
+	    }
+	    
+	    private Future<HttpServer> configureTheHTTPServer() {
+	        Future<HttpServer> httpServerFuture = Future.future();
+
+	        // Use a Vert.x web router for this REST API
+	        Router router = Router.router(vertx);
+
+	        // Com APIs
+	        router.post("/createInvoice").handler(this::createInvoice);
+	        
+	        // CORS OPTIONS
+	        router.options("/createInvoice").handler(this::createInvoice);
+	        
+	        vertx.createHttpServer().requestHandler(router::accept).listen(port, httpServerFuture.completer());
+	        return httpServerFuture;
+	    }
+	    
+	    public void createInvoice(RoutingContext routingContext) {
+	        routingContext.request().bodyHandler(new Handler<Buffer>() {
+	            @Override
+	            public void handle(Buffer event) {
+	                vertx.executeBlocking(future -> {
+	                    if (!isJSONValid(event.toString())) {
+	                        JsonObject temp = new JsonObject();
+	                        temp.put("Error", "The given post data is not a valid json format");
+	                        future.complete(temp);
+	                        return;
+	                    }
+	                    JsonObject params = new JsonObject(event.toString());
+	                    JsonObject dataObject = null;
+	                    if (params.containsKey("data")) {
+	                    	Object val = params.getValue("data");
+	                    	if(val instanceof String){
+	                    		dataObject = new JsonObject(val.toString());
+	                    	}
+	                    	else if(val instanceof JsonObject)
+	                    		dataObject = params.getJsonObject("data");
+	                    	else {
+	                    		JsonObject temp = new JsonObject();
+	                    		temp.put("Error", "The given post data is not a valid json format");
+	                            future.complete(temp);
+	                            return;
+	                    	}
+	                        if (dataObject == null)
+	                            future.complete(null);
+	                    } else {
+	                        JsonObject temp = new JsonObject();
+	                        temp.put("Error", "post data format is not proper");
+	                        future.complete(temp);
+	                        return;
+	                    }
+	                    try {
+	                        String billedTo = dataObject.getValue("billedTo") != null ? dataObject.getValue("billedTo").toString() : null ;
+	                        String quantity = dataObject.getValue("quantity")!= null ? dataObject.getValue("quantity").toString() : null;
+	                        String productName = dataObject.getValue("productName")!= null ? dataObject.getValue("productName").toString() : null;
+	                        String order_id =  dataObject.getValue("order_id")!= null ? dataObject.getValue("order_id").toString() : null;
+	                        String price =  dataObject.getValue("price")!= null ? dataObject.getValue("price").toString() : null;
+	                        
+	                       if (checkNullOrEmptyInt(routingContext, billedTo, "billedTo")) {
+	                            future.fail("-1");
+	                            return;
+	                        } else if (checkNullOrEmptyInt(routingContext, quantity, "quantity")) {
+	                            future.fail("-1");
+	                            return;
+	                        } else if (checkNullOrEmptyInt(routingContext, price, "price")) {
+	                            future.fail("-1");
+	                            return;
+	                        } 
+	                        else if (checkNullOrEmptyInt(routingContext, order_id, "order_id")) {
+	                            future.fail("-1");
+	                            return;
+	                        } else if (checkNullOrEmptyInt(routingContext, productName, "productName")) {
+	                            future.fail("-1");
+	                            return;
+	                        }
+	                        
+	                        future.complete(services.Services.generateInvoice(dataObject));
+	                    } catch (Exception e) {
+	                        // TODO Auto-generated catch block
+	                        e.printStackTrace();
+	                    }
+	                }, asyncResult -> {
+	                    if (asyncResult.succeeded()) {
+	                        System.out.println("inside asyncResult success");
+	                        Map<String, Object> resultMap = new HashMap<String, Object>();
+	                        JsonObject result = new JsonObject();
+	                        if (asyncResult.result() instanceof JsonObject) {
+	                            result = (JsonObject) asyncResult.result();
+	                            System.out.println(result);
+	                            if(result != null && result.containsKey("Error")){
+	                            	 	resultMap.put("success", 0);
+			                            resultMap.put("data", result);
+	                            }
+	                            else if (asyncResult.result() != null) {
+	                            	resultMap.put("success", 1);
+	 	                            resultMap.put("data", "Invoice generated Successfully");
+	 	                            resultMap.put("Message", asyncResult.result());
+	                            }
+	                            else {
+		                            resultMap.put("success", 0);
+		                            resultMap.put("data", null);
+		                            resultMap.put("Message", "There was an error while generating invoice");
+	                            }
+	                        }
+	                        else
+	                        {
+	                        	if (asyncResult.result() != null) {
+	                            	resultMap.put("success", 1);
+	 	                            resultMap.put("data", "order created succesfully");
+	 	                            resultMap.put("Message", asyncResult.result());
+	                            }
+	                            else {
+		                            resultMap.put("success", 0);
+		                            resultMap.put("data", null);
+		                            resultMap.put("Message", "There was an error while creating order");
+	                            }
+	                        }
+	                        Common.getHeaders(routingContext).setStatusCode(200).end(Json.encodePrettily(resultMap));
+	                    }
+	                    if (asyncResult.failed() && asyncResult.cause().toString().equalsIgnoreCase("-1")) {
+	                        System.out.println("inside result failed, cause: " + asyncResult.cause().toString());
+	                        Common.getHeaders(routingContext).setStatusCode(200).end(Json.encodePrettily("Result Failed"));
+	                    }
+	                });
+
+	            }
+	        });
+
+	    }
+	    
+	    public boolean checkNullOrEmptyInt(RoutingContext c, String s, String key) {
+
+	        Map<String, Object> resultMap = new HashMap<String, Object>();
+	        resultMap.put("success", 0);
+	        resultMap.put("Message", key + " is required and cannot be null");
+	        resultMap.put("data", "null");
+
+	        try {
+	            if (s == null || s.equalsIgnoreCase("")) {
+	                if (!s.contains(",") && !(Integer.parseInt(s) > 0)) {
+	                    Common.getHeaders(c).setStatusCode(200).end(Json.encodePrettily(resultMap));
+	                    return true;
+	                }
+	            }
+
+	        } catch (Exception e) {
+	        	Common.getHeaders(c).setStatusCode(200).end(Json.encodePrettily(resultMap));
+	            return true;
+	        }
+
+	        return false;
+	    }
+
+	    public boolean isJSONValid(String test) {
+	        try {
+	        	System.out.println(test);
+	            new JsonObject(test);
+	        } catch (Exception ex) {
+	            try {
+	                new JsonArray(test);
+	            } catch (Exception ex1) {
+	                return false;
+	            }
+	        }
+	        return true;
+	    }
+
+}

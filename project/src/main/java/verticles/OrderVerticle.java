@@ -146,6 +146,19 @@ public class OrderVerticle extends MicroServiceVerticle {
 		                            resultMap.put("Message", "There was an error while creating order");
 	                            }
 	                        }
+	                        else
+	                        {
+	                        	if (asyncResult.result() != null) {
+	                            	resultMap.put("success", 1);
+	 	                            resultMap.put("data", "order created succesfully");
+	 	                            resultMap.put("Message", asyncResult.result());
+	                            }
+	                            else {
+		                            resultMap.put("success", 0);
+		                            resultMap.put("data", null);
+		                            resultMap.put("Message", "There was an error while creating order");
+	                            }
+	                        }
 	                        Common.getHeaders(routingContext).setStatusCode(200).end(Json.encodePrettily(resultMap));
 	                    }
 	                    if (asyncResult.failed() && asyncResult.cause().toString().equalsIgnoreCase("-1")) {

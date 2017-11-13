@@ -137,6 +137,19 @@ public class InvoiceVerticle extends MicroServiceVerticle {
 		                            resultMap.put("Message", "There was an error while generating invoice");
 	                            }
 	                        }
+	                        else
+	                        {
+	                        	if (asyncResult.result() != null) {
+	                            	resultMap.put("success", 1);
+	 	                            resultMap.put("data", "Invoice generated Successfully");
+	 	                            resultMap.put("Message", asyncResult.result());
+	                            }
+	                            else {
+		                            resultMap.put("success", 0);
+		                            resultMap.put("data", null);
+		                            resultMap.put("Message", "There was an error while generating invoice");
+	                            }
+	                        }
 	                        Common.getHeaders(routingContext).setStatusCode(200).end(Json.encodePrettily(resultMap));
 	                    }
 	                    if (asyncResult.failed() && asyncResult.cause().toString().equalsIgnoreCase("-1")) {

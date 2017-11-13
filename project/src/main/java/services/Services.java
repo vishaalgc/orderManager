@@ -34,7 +34,6 @@ public class Services {
 		if(resp.containsKey("ok")) {
 			JsonObject output = new JsonObject();
 			output.put("order_id", resp.getString("id"));
-			output.put("message", "order created successfully");
 			// Send Email
 			inputJson.put("order_id", resp.getString("id"));
 			sendEmail(inputJson);

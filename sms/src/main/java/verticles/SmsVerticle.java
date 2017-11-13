@@ -135,6 +135,19 @@ public class SmsVerticle extends MicroServiceVerticle {
 		                            resultMap.put("Message", "There was an error while generating sms");
 	                            }
 	                        }
+	                        else
+	                        {
+	                        	if (asyncResult.result() != null) {
+	                            	resultMap.put("success", 1);
+	 	                            resultMap.put("data", "Sms triggered succesfully");
+	 	                            resultMap.put("Message", asyncResult.result());
+	                            }
+	                            else {
+		                            resultMap.put("success", 0);
+		                            resultMap.put("data", null);
+		                            resultMap.put("Message", "There was an error while generating sms");
+	                            }
+	                        }
 	                        Common.getHeaders(routingContext).setStatusCode(200).end(Json.encodePrettily(resultMap));
 	                    }
 	                    if (asyncResult.failed() && asyncResult.cause().toString().equalsIgnoreCase("-1")) {
@@ -231,6 +244,19 @@ public class SmsVerticle extends MicroServiceVerticle {
 			                            resultMap.put("data", result);
 	                            }
 	                            else if (asyncResult.result() != null) {
+	                            	resultMap.put("success", 1);
+	 	                            resultMap.put("data", "Email trigggerd successfully");
+	 	                            resultMap.put("Message", asyncResult.result());
+	                            }
+	                            else {
+		                            resultMap.put("success", 0);
+		                            resultMap.put("data", null);
+		                            resultMap.put("Message", "There was an error while generating email");
+	                            }
+	                        }
+	                        else
+	                        {
+	                        	if (asyncResult.result() != null) {
 	                            	resultMap.put("success", 1);
 	 	                            resultMap.put("data", "Email trigggerd successfully");
 	 	                            resultMap.put("Message", asyncResult.result());
